@@ -22,7 +22,7 @@ client = bigquery.Client()
 # country_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\country_data.csv', index=False)
 
 # #2
-# query = "SELECT country_name, SUM(new_confirmed) as `total_confirmed_cases` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY country_name ORDER BY country_name "
+# query = "SELECT country_code, country_name, SUM(new_confirmed) as `total_confirmed_cases_per_country` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY country_name ORDER BY country_name "
 # query_disease = client.query(query)
 # query_disease_result = query_disease.result()
 # disease_df = query_disease_result.to_dataframe()
@@ -30,17 +30,25 @@ client = bigquery.Client()
 # disease_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\disease_data.csv', index=False)
 
 #3
-# query = "SELECT country_name, SUM(new_deceased) as `total_deceased` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY country_name ORDER BY country_name "
+# query = "SELECT country_code, country_name, SUM(new_deceased) as `total_deceased_per_country` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY country_name ORDER BY country_name "
 # query_deceased = client.query(query)
 # query_deceased_result = query_deceased.result()
 # deceased_df = query_deceased_result.to_dataframe()
 # deceased_df.dropna(inplace=True)
 # deceased_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\deceased_data.csv', index=False)
 
-#4
-query = "SELECT date, SUM(new_persons_vaccinated) as `global_persons_vaccinated` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY date ORDER BY date "
-query_vaccine = client.query(query)
-query_vaccine_result = query_vaccine.result()
-vaccine_df = query_vaccine_result.to_dataframe()
-vaccine_df.dropna(inplace=True)
-vaccine_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\vaccine_data.csv', index=False)
+# #4
+# query = "SELECT date, SUM(new_persons_vaccinated) as `global_persons_vaccinated` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY date ORDER BY date "
+# query_vaccine = client.query(query)
+# query_vaccine_result = query_vaccine.result()
+# vaccine_df = query_vaccine_result.to_dataframe()
+# vaccine_df.dropna(inplace=True)
+# vaccine_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\vaccine_data.csv', index=False)
+
+# #5 Liczba wykonanych testów na całym świecie
+# query = "SELECT country_code, country_name, SUM(cast(new_tested as integer)) as `total_tested_person_per_country` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY country_name ORDER BY country_name "
+# query_tested = client.query(query)
+# query_tested_result = query_tested.result()
+# tested_df = query_tested_result.to_dataframe()
+# tested_df.dropna(inplace=True)
+# tested_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\tested_data.csv', index=False)
