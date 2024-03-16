@@ -38,7 +38,7 @@ deceased_df.dropna(inplace=True)
 deceased_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\deceased_data.csv', index=False)
 
 #4
-query = "SELECT date, SUM(new_persons_vaccinated) as `global_persons_vaccinated` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY date ORDER BY date "
+query = "SELECT country_code, country_name, SUM(new_persons_vaccinated) as `global_persons_vaccinated` FROM `bigquery-public-data.covid19_open_data.covid19_open_data`  GROUP BY country_code, country_name ORDER BY country_name "
 query_vaccine = client.query(query)
 query_vaccine_result = query_vaccine.result()
 vaccine_df = query_vaccine_result.to_dataframe()
@@ -54,10 +54,21 @@ tested_df.dropna(inplace=True)
 tested_df.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\tested_data.csv', index=False)
 
 # część 5
-# Tworzymy 2 dataframe, ponieważ w naszych analizach badalismy zsumowane dane dla kraju lub dla daty. Złączenie tych dwóch rodzajów analiz w jeden obiekt
-# mogłoby zaciemnić otrzymane wyniki.
-# Danych z zaszczepionymi według daty nie zapisujemy w tej części, ponieważ nie mamy z czym ich połączyć.
-merged_1 = pd.merge(country_df, disease_df, on=['country_name', 'country_code'])
-merged_2 = pd.merge(merged_1, deceased_df, on=['country_name', 'country_code'])
-merged_df_per_country = pd.merge(merged_2, tested_df, on=['country_name', 'country_code'])
-merged_df_per_country.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\merged_data_per_country.csv', index=False)
+merged_country_disease = pd.merge(country_df, disease_df, on=['country_name', 'country_code'])
+merged_country_disease_deceased = pd.merge(merged_country_disease, deceased_df, on=['country_name', 'country_code'])
+merged_country_disease_deceased_vaccine = pd.merge(merged_country_disease_deceased, vaccine_df, on=['country_name', 'country_code'])
+merged_df_per_country = pd.merge(merged_country_disease_deceased_vaccine, tested_df, on=['country_name', 'country_code'])
+merged_df_per_country.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\part_5_merged.csv', index=False)
+
+# część 6
+world_countries_df = pd.read_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\dane_z_wikamp\\world_countries.csv')
+gdp_df = pd.read_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\dane_z_wikamp\\gdp.csv')
+
+merged_df_per_country_world_countries = pd.merge(merged_df_per_country, world_countries_df, left_on='country_name', right_on='Country/Territory')
+merged_df_per_country_world_countries.drop('Country/Territory', axis=1, inplace=True)
+merged_df_per_country_world_countries.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\part_6_05_merged.csv', index=False)
+
+
+# to nie działa i chuj xD, bo dane są jeszcze podzielone na lata różne i nie wiem jak to sensownie zmergować :)
+# merged_df_per_country_world_countries_gdp = pd.merge(merged_df_per_country_world_countries, gdp_df, left_on=['country_name', 'country_code'], right_on=["Country Name","Country Code"])
+# merged_df_per_country_world_countries_gdp.to_csv('C:\\Users\\rober\\OneDrive\\Pulpit\\semestr 6\\BigData\\zad1\\wyniki\\part_6_merged.csv', index=False)
